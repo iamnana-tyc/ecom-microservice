@@ -1,6 +1,5 @@
 package com.ecommerce.order.clients;
 
-import org.springframework.boot.restclient.autoconfigure.RestClientBuilderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
