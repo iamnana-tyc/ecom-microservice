@@ -22,7 +22,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: metrics, health, info, prometheus, busrefresh, shutdown, circuitbreakers, circuitbreakerevents
   tracing:
     sampling:
       probability: 1.0
@@ -30,7 +30,13 @@ management:
       zipkin:
         enabled: true
         endpoint: http://localhost:9411/api/v2/spans
-
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+  health:
+    circuitbreakers:
+      enabled: true
 
 eureka:
   client:
@@ -46,3 +52,21 @@ logging:
     rollingpolicy:
       max-file-size: 5MB
       max-history: 7
+
+
+### Circuit breaker
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+    instances:
+      productService:
+        registerHealthIndicator: true
+        slidingWindowType: count_based
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        automaticTransitionFromOpenToHalfOpenEnabled: true
