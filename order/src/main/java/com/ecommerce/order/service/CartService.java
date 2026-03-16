@@ -11,7 +11,9 @@ import com.ecommerce.order.repository.CartItemRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,7 +26,7 @@ public class CartService {
     private final ProductServiceClient productServiceClient;
     private final UserServiceClient userServiceClient;
 
-    @CircuitBreaker(name = "productService", fallbackMethod = "productFallback")
+    @CircuitBreaker(name = "productService", fallbackMethod = "addToCartFallback")
     public boolean addToCart(String userId, CartItemRequest request) {
         ProductResponse productResponse = productServiceClient.getProductDetails(request.getProductId());
         if (productResponse == null || productResponse.getStockQuantity() < request.getQuantity())
@@ -62,13 +64,29 @@ public class CartService {
     }
 
     public List<CartItem> getCart(String userId) {
-       // return cartItemRepository.findByUserId(userId);
-        UserResponse existingUser = userServiceClient.getUserDetails(userId);
+        UserResponse existingUser = getUser(userId);
 
         return cartItemRepository.findByUserId(existingUser.getUserId());
     }
 
     public void clearCart(String userId) {
         cartItemRepository.deleteByUserId(userId);
+    }
+
+    @CircuitBreaker(name = "userService", fallbackMethod = "getUserFallBack")
+    public UserResponse getUser(String userId){
+        return userServiceClient.getUserDetails(userId);
+    }
+
+    public boolean addToCartFallback(String userId, CartItemRequest request, Throwable ex) {
+        System.out.println("Circuit breaker fallback triggered: " + ex.getMessage());
+        ex.printStackTrace();
+        return false;
+    }
+
+    public UserResponse getUserFallBack(String userId, Throwable ex) {
+        System.out.println("Fallback triggered: " + ex.getMessage());
+        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                "User service unavailable");
     }
 }
