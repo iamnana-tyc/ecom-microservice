@@ -1,4 +1,4 @@
-package com.iamnana.gateway;
+package com.iamnana.gateway.config;
 
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -15,17 +15,28 @@ public class GatewayConfig {
                         .path("/products/**")
                         .filters(f -> f
                                 .prefixPath("/api")
-                                .circuitBreaker(config -> config.setName("ecomBreaker")))
+                                .circuitBreaker(config -> config
+                                        .setName("ecomBreaker")
+                                        .setFallbackUri("forward:/fallback/products")
+                                ))
                         .uri("lb://PRODUCT-SERVICE"))
                 .route("user-service", r-> r
                         .path("/users/**")
                         .filters(f -> f
-                                .prefixPath("/api"))
+                                .prefixPath("/api")
+                                .circuitBreaker(config -> config
+                                        .setName("ecomBreaker")
+                                        .setFallbackUri("forward:/fallback/users")
+                                ))
                         .uri("lb://USER-SERVICE"))
                 .route("order-service", r -> r
                         .path("/orders/**", "/cart/**")
                         .filters(f -> f
-                                .prefixPath("/api"))
+                                .prefixPath("/api")
+                                .circuitBreaker(config -> config
+                                        .setName("ecomBreaker")
+                                        .setFallbackUri("forward:/fallback/orders")
+                                ))
                         .uri("lb://ORDER-SERVICE"))
                 .route("eureka-server" , r -> r
                         .path("/eureka/main")
