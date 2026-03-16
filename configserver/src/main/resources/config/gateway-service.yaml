@@ -1,37 +1,37 @@
-spring:
-  cloud:
-    gateway:
-      server:
-        webflux:
-          routes:
-            - id: product-service
-              uri: lb://PRODUCT-SERVICE
-              predicates:
-                - Path=/products/**
-              filters:
-                - "PrefixPath=/api"
-            - id: user-service
-              uri: lb://USER-SERVICE
-              predicates:
-                - Path=/users/**
-              filters:
-                - "PrefixPath=/api"
-            - id: order-service
-              uri: lb://ORDER-SERVICE
-              predicates:
-                - Path=/orders/**, /cart/**
-              filters:
-                - "PrefixPath=/api"
-            - id: eureka-server
-              uri: http://localhost:8761
-              predicates:
-                - Path=/eureka/main
-              filters:
-                - SetPath=/
-            - id: eureka-server-static
-              uri: http://localhost:8761
-              predicates:
-                - Path=/eureka/**
+#spring:
+#  cloud:
+#    gateway:
+#      server:
+#        webflux:
+#          routes:
+#            - id: product-service
+#              uri: lb://PRODUCT-SERVICE
+#              predicates:
+#                - Path=/products/**
+#              filters:
+#                - "PrefixPath=/api"
+#            - id: user-service
+#              uri: lb://USER-SERVICE
+#              predicates:
+#                - Path=/users/**
+#              filters:
+#                - "PrefixPath=/api"
+#            - id: order-service
+#              uri: lb://ORDER-SERVICE
+#              predicates:
+#                - Path=/orders/**, /cart/**
+#              filters:
+#                - "PrefixPath=/api"
+#            - id: eureka-server
+#              uri: http://localhost:8761
+#              predicates:
+#                - Path=/eureka/main
+#              filters:
+#                - SetPath=/
+#            - id: eureka-server-static
+#              uri: http://localhost:8761
+#              predicates:
+#                - Path=/eureka/**
 
 server:
   port: 8080
@@ -47,6 +47,29 @@ management:
     web:
       exposure:
         include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
   tracing:
     sampling:
       probability: 1.0
+
+### Circuit breaker
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+    instances:
+      ecomBreaker:
+        registerHealthIndicator: true
+        slidingWindowType: count_based
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        automaticTransitionFromOpenToHalfOpenEnabled: true
