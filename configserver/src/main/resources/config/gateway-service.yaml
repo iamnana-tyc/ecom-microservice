@@ -1,37 +1,67 @@
-#spring:
-#  cloud:
-#    gateway:
-#      server:
-#        webflux:
-#          routes:
-#            - id: product-service
-#              uri: lb://PRODUCT-SERVICE
-#              predicates:
-#                - Path=/products/**
-#              filters:
-#                - "PrefixPath=/api"
-#            - id: user-service
-#              uri: lb://USER-SERVICE
-#              predicates:
-#                - Path=/users/**
-#              filters:
-#                - "PrefixPath=/api"
-#            - id: order-service
-#              uri: lb://ORDER-SERVICE
-#              predicates:
-#                - Path=/orders/**, /cart/**
-#              filters:
-#                - "PrefixPath=/api"
-#            - id: eureka-server
-#              uri: http://localhost:8761
-#              predicates:
-#                - Path=/eureka/main
-#              filters:
-#                - SetPath=/
-#            - id: eureka-server-static
-#              uri: http://localhost:8761
-#              predicates:
-#                - Path=/eureka/**
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: product-service
+              uri: lb://PRODUCT-SERVICE
+              predicates:
+                - Path=/products/**
+              filters:
+                - "PrefixPath=/api"
+                ## Retry
+                - name: Retry
+                  args:
+                    retries: 3
+                    methods: GET
+
+                ## RateLimiter
+                - name: RequestRateLimiter
+                  args:
+                    key-resolver: "#{@hostNameKeyResolver}"
+                    redis-rate-limiter.replenishRate: 5
+                    redis-rate-limiter.burstCapacity: 10
+                    redis-rate-limiter.requestedTokens: 1
+
+                # Circuit Breaker
+                - name: CircuitBreaker
+                  args:
+                    name: ecomBreaker
+                    fallbackUri: forward:/fallback/products
+
+            - id: user-service
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/users/**
+              filters:
+                - "PrefixPath=/api"
+                - name: CircuitBreaker
+                  args:
+                    name: ecomBreaker
+                    fallbackUri: forward:/fallback/users
+
+            - id: order-service
+              uri: lb://ORDER-SERVICE
+              predicates:
+                - Path=/orders/**, /cart/**
+              filters:
+                - "PrefixPath=/api"
+                - name: CircuitBreaker
+                  args:
+                    name: ecomBreaker
+                    fallbackUri: forward:/fallback/orders
+
+            - id: eureka-server
+              uri: http://localhost:8761
+              predicates:
+                - Path=/eureka/main
+              filters:
+                - SetPath=/
+            - id: eureka-server-static
+              uri: http://localhost:8761
+              predicates:
+                - Path=/eureka/**
 
 server:
   port: 8080
