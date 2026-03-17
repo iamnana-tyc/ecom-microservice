@@ -58,4 +58,12 @@ public class ProductController {
                 .map(ResponseEntity::ok)
                 .orElseGet(()-> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/simulate")
+    public ResponseEntity<String> simulateFailure(@RequestParam(defaultValue = "false") boolean fail){
+        if (fail){
+            throw new RuntimeException("Simulated Failure for testing");
+        }
+        return ResponseEntity.ok("Product Service is ok.");
+    }
 }
