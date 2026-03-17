@@ -52,7 +52,6 @@ logging:
       max-file-size: 5MB
       max-history: 7
 
-
 ### Circuit breaker
 resilience4j:
   circuitbreaker:
@@ -80,4 +79,3 @@ resilience4j:
         timeout-Duration: 0
         limit-refresh-period: 4s
         limit-for-period: 3
-
