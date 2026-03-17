@@ -69,3 +69,15 @@ resilience4j:
         waitDurationInOpenState: 10s
         failureRateThreshold: 50
         automaticTransitionFromOpenToHalfOpenEnabled: true
+  retry:
+    instances:
+      retryBreaker:
+        maxAttempts: 5
+        waitDuration: 5s
+  ratelimiter:
+    instances:
+      rateBreaker:
+        timeout-Duration: 0
+        limit-refresh-period: 4s
+        limit-for-period: 3
+
