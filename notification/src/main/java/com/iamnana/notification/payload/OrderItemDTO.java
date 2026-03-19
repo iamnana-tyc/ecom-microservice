@@ -1,4 +1,4 @@
-package com.ecommerce.order.dto;
+package com.iamnana.notification.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
