@@ -1,7 +1,5 @@
-package com.ecommerce.order.dto;
+package com.iamnana.notification.payload;
 
-import com.ecommerce.order.model.OrderItem;
-import com.ecommerce.order.model.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
