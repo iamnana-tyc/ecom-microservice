@@ -1,4 +1,4 @@
-package com.ecommerce.order.model;
+package com.iamnana.notification.payload;
 
 public enum OrderStatus {
     PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
