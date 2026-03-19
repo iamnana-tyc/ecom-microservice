@@ -33,14 +33,6 @@ public class OrderService {
     private String routingKey;
 
     public Optional<OrderResponse> createOrder(String userId) {
-//        // validate user
-//        Optional<User> exitingUser = userRepository.findById(Long.valueOf(userId));
-//        if (exitingUser.isEmpty()) {
-//            // handle validation
-//            return Optional.empty();
-//        }
-//        User user = exitingUser.get();
-
         // validate cart items
         List<CartItem> cartItems = cartService.getCart(userId);
         if (cartItems.isEmpty()) {
