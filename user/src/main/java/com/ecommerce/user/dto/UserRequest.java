@@ -10,4 +10,6 @@ public class UserRequest {
     private String email;
     private String phoneNumber;
     private AddressDTO address;
+    private String username;
+    private String password;
 }
