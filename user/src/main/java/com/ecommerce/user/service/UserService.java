@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +18,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final KeyCloakAdminService keyCloakAdminService;
 
     public List<UserResponse> getAllUsers(){
         return userRepository.findAll().stream()
@@ -27,7 +27,15 @@ public class UserService {
     }
 
     public UserResponse createUser(UserRequest request){
+        // creating user in keycloak
+        String token = keyCloakAdminService.getAdminAccessToken();
+        String keycloakUserId = keyCloakAdminService.createUser(token, request);
+
+        // to create user in database
         User user = this.mapToUser(request);
+        user.setKeycloakId(keycloakUserId);
+        keyCloakAdminService.assignRealmRoleToUser(request.getUsername(), "USER", keycloakUserId);
+
         User savedUser = userRepository.save(user);
 
         return this.mapToUserResponse(savedUser);
@@ -38,8 +46,6 @@ public class UserService {
                 .orElseThrow(()-> new RuntimeException("User with the Id: " + userId + " does not exist"));
 
         return this.mapToUserResponse(exitingUser);
-//       return userRepository.findById(userId)
-//               .map(this::mapToUserResponse);
     }
 
     public UserResponse updateUser(String userId, UserRequest user) {
@@ -73,6 +79,7 @@ public class UserService {
 
     private UserResponse mapToUserResponse(User user){
         UserResponse response = new UserResponse();
+        response.setKeycloakId(user.getKeycloakId());
         response.setUserId(String.valueOf(user.getUserId()));
         response.setFirstName(user.getFirstName());
         response.setLastName(user.getLastName());
