@@ -45,9 +45,9 @@ logging:
 ### KEYCLOAK
 keycloak:
   admin:
-    username: user
-    password: user
+    username: user-ecom
+    password: ${USER_PASSWORD}
     server-url: http://localhost:8443
     realm: ecom-app
-    client-id: oauth-ecom-pkce
-    client-uid: 4cbc21d4-733f-4028-8447-6b074f0f08a1
+    client-id: ${CLIENT_ID}
+    client-uid: ${CLIENT_UUID}
