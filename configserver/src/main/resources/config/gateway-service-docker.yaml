@@ -1,0 +1,112 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: product-service
+              uri: lb://PRODUCT-SERVICE
+              predicates:
+                - Path=/products/**
+              filters:
+                - "PrefixPath=/api"
+                ## Retry
+                - name: Retry
+                  args:
+                    retries: 3
+                    methods: GET
+
+                ## RateLimiter
+                - name: RequestRateLimiter
+                  args:
+                    key-resolver: "#{@hostNameKeyResolver}"
+                    redis-rate-limiter.replenishRate: 5
+                    redis-rate-limiter.burstCapacity: 10
+                    redis-rate-limiter.requestedTokens: 1
+
+                # Circuit Breaker
+                - name: CircuitBreaker
+                  args:
+                    name: ecomBreaker
+                    fallbackUri: forward:/fallback/products
+
+            - id: user-service
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/users/**
+              filters:
+                - "PrefixPath=/api"
+                - name: CircuitBreaker
+                  args:
+                    name: ecomBreaker
+                    fallbackUri: forward:/fallback/users
+
+            - id: order-service
+              uri: lb://ORDER-SERVICE
+              predicates:
+                - Path=/orders/**, /cart/**
+              filters:
+                - "PrefixPath=/api"
+                - name: CircuitBreaker
+                  args:
+                    name: ecomBreaker
+                    fallbackUri: forward:/fallback/orders
+
+            - id: eureka-server
+              uri: http://localhost:8761
+              predicates:
+                - Path=/eureka/main
+              filters:
+                - SetPath=/
+            - id: eureka-server-static
+              uri: http://localhost:8761
+              predicates:
+                - Path=/eureka/**
+
+### OAUTH2 SECURITY CONFIGURATION
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/ecom-app
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: info
+    org.springframework.cloud.gateway.route.RouteDefinitionLocator: info
+    org.springframework.cloud.gateway: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+
+### Circuit breaker
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+    instances:
+      ecomBreaker:
+        registerHealthIndicator: true
+        slidingWindowType: count_based
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        automaticTransitionFromOpenToHalfOpenEnabled: true
