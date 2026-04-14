@@ -1,6 +1,6 @@
 services:
   postgres:
-    container_name: postgres_container
+    container_name: postgres
     image: postgres:14
     environment:
       POSTGRES_USER: postgres
@@ -70,11 +70,13 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
     networks:
       - backend
 
   rabbitmq:
-    container_name: rabbitmq_container
+    container_name: rabbitmq
     image: rabbitmq:4-management
     environment:
       RABBITMQ_DEFAULT_USER: guest
@@ -91,6 +93,14 @@ services:
     container_name: zipkin
     ports:
       - 9411:9411
+    networks:
+      - backend
+
+  configserver:
+    build: ./configserver
+    container_name: config-server
+    ports:
+      - 8888:8888
     networks:
       - backend
 
