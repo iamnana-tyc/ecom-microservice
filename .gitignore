@@ -70,7 +70,7 @@ Thumbs.db
 #################################################
 
 # Environment files
-.env
+Deploy/Docker/.env
 .env.*
 **/.env
 **/.env.*
