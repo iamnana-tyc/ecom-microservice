@@ -194,6 +194,29 @@ services:
     networks:
       - backend
 
+  order-service:
+    build: ./order
+    container_name: order-service
+    ports:
+      - 8083:8083
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_USERNAME=${RABBITMQ_USERNAME}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST}
+    depends_on:
+      - configserver
+      - eureka
+      - rabbitmq
+      - keycloak
+      - mongo
+    networks:
+      - backend
+
 networks:
   backend:
     driver: bridge
