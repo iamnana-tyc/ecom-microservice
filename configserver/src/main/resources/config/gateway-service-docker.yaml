@@ -53,13 +53,13 @@ spring:
                     fallbackUri: forward:/fallback/orders
 
             - id: eureka-server
-              uri: http://localhost:8761
+              uri: http://eureka:8761
               predicates:
                 - Path=/eureka/main
               filters:
                 - SetPath=/
             - id: eureka-server-static
-              uri: http://localhost:8761
+              uri: http://eureka:8761
               predicates:
                 - Path=/eureka/**
 
@@ -110,3 +110,10 @@ resilience4j:
         waitDurationInOpenState: 10s
         failureRateThreshold: 50
         automaticTransitionFromOpenToHalfOpenEnabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true

@@ -8,6 +8,7 @@ services:
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
+      - ./init-multi-db.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     networks:
@@ -101,6 +102,95 @@ services:
     container_name: config-server
     ports:
       - 8888:8888
+    environment:
+      - SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCH_LOCATIONS=/config
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_USERNAME=${RABBITMQ_USERNAME}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST}
+      - KEYCLOAK_USER_PASSWORD=${USER_PASSWORD}
+      - KEYCLOAK_CLIENT_ID=${CLIENT_ID}
+      - KEYCLOAK_CLIENT_UUID=${CLIENT_UUID}
+    volumes:
+      - ./configserver/src/main/resources/config:/config
+    networks:
+      - backend
+
+  eureka:
+    build: ./eureka
+    container_name: eureka
+    ports:
+      - 8761:8761
+    networks:
+      - backend
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "Http://localhost:8761/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  gateway-service:
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - configserver
+      - eureka
+      - rabbitmq
+      - keycloak
+      - mongo
+    networks:
+      - backend
+
+  user-service:
+    build: ./user
+    container_name: user-service
+    ports:
+      - 8082:8082
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - MONGO_URI=${MONGO_URI}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_USERNAME=${RABBITMQ_USERNAME}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST}
+      - USER_PASSWORD=${USER_PASSWORD}
+      - CLIENT_ID=${CLIENT_ID}
+      - CLIENT_UUID=${CLIENT_UUID}
+    depends_on:
+      - mongo
+      - rabbitmq
+      - eureka
+      - keycloak
+      - configserver
+    networks:
+      - backend
+
+  product-service:
+    build: ./product
+    container_name: product-service
+    ports:
+      - 8081:8081
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_USERNAME=${RABBITMQ_USERNAME}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST}
+    depends_on:
+      - configserver
+      - eureka
+      - rabbitmq
+      - keycloak
+      - mongo
     networks:
       - backend
 

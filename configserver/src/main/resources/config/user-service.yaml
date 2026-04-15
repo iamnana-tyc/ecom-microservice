@@ -47,7 +47,7 @@ keycloak:
   admin:
     username: user-ecom
     password: ${USER_PASSWORD}
-    server-url: http://localhost:8443
+    server-url: http://keycloak:8443
     realm: ecom-app
     client-id: ${CLIENT_ID}
     client-uid: ${CLIENT_UUID}
