@@ -98,7 +98,7 @@ services:
       - backend
 
   configserver:
-    build: ../../configserver
+    image: ecom/config-server
     container_name: config-server
     ports:
       - 8888:8888
@@ -118,7 +118,7 @@ services:
       - backend
 
   eureka:
-    build: ../../eureka
+    image: ecom/eureka
     container_name: eureka
     ports:
       - 8761:8761
@@ -131,7 +131,7 @@ services:
       retries: 5
 
   gateway-service:
-    build: ../../gateway
+    image: ecom/gateway
     container_name: gateway
     ports:
       - 8080:8080
@@ -147,7 +147,7 @@ services:
       - backend
 
   user-service:
-    build: ../../user
+    image: ecom/user-service
     container_name: user-service
     ports:
       - 8082:8082
@@ -172,7 +172,7 @@ services:
       - backend
 
   product-service:
-    build: ../../product
+    image: ecom/product-service
     container_name: product-service
     ports:
       - 8081:8081
@@ -195,7 +195,7 @@ services:
       - backend
 
   order-service:
-    build: ../../order
+    image: ecom/order-service
     container_name: order-service
     ports:
       - 8083:8083
