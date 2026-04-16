@@ -145,6 +145,7 @@ services:
       - mongo
     networks:
       - backend
+    restart: on-failure
 
   user-service:
     image: ecom/user-service
@@ -170,6 +171,7 @@ services:
       - configserver
     networks:
       - backend
+    restart: on-failure
 
   product-service:
     image: ecom/product-service
@@ -193,6 +195,7 @@ services:
       - mongo
     networks:
       - backend
+    restart: on-failure
 
   order-service:
     image: ecom/order-service
@@ -216,6 +219,7 @@ services:
       - mongo
     networks:
       - backend
+    restart: on-failure
 
 networks:
   backend:
