@@ -9,3 +9,4 @@ cd order && ./mvnw spring-boot:build-image -DskipTests && cd ..
 cd user && ./mvnw spring-boot:build-image -DskipTests && cd ..
 cd product && ./mvnw spring-boot:build-image -DskipTests && cd ..
 cd gateway && ./mvnw spring-boot:build-image -DskipTests && cd ..
+cd notification && ./mvnw spring-boot:build-image -DskipTests && cd ..

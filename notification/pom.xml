@@ -107,6 +107,9 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<image>
+						<name>ecom/notification-service</name>
+					</image>
 				</configuration>
 			</plugin>
 		</plugins>
