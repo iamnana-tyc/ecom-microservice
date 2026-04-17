@@ -1,7 +1,7 @@
 spring:
   mongodb:
     uri: ${MONGO_URI}
-    database: userDb
+    database: ecom_user
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
@@ -45,7 +45,7 @@ logging:
 ### KEYCLOAK
 keycloak:
   admin:
-    username: user-ecom
+    username: user
     password: ${USER_PASSWORD}
     server-url: http://keycloak:8080
     realm: ecom-app

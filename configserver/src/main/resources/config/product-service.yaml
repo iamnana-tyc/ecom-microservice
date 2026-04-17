@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/product
+    url: jdbc:postgresql://postgres:5432/productdb
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
@@ -32,12 +32,12 @@ management:
     export:
       zipkin:
         enabled: true
-        endpoint: http://localhost:9411/api/v2/spans
+        endpoint: http://zipkin:9411/api/v2/spans
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://eureka:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
 

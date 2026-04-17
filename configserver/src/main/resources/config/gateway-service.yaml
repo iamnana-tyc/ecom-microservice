@@ -68,7 +68,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8443/realms/ecom-app
+          issuer-uri: http://keycloak:8443/realms/ecom-app
 
 server:
   port: 8080
