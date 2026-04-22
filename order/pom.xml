@@ -155,10 +155,9 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
-					<image>
-						<name>ecom/order-service</name>
-					</image>
-
+<!--					<image>-->
+<!--						<name>ecom/order-service</name>-->
+<!--					</image>-->
 				</configuration>
 			</plugin>
 		</plugins>
