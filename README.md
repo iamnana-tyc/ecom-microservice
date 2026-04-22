@@ -283,14 +283,14 @@ Each service is:
 
 ---
 
-## ▶️ Start All Services
+## ️ Start All Services
 
 ```bash
 docker compose up -d
 ```
 
 
-## 🌐 Access Services from Host Machine
+##  Access Services from Host Machine
 
 | Service       | URL                                            |
 | ------------- | ---------------------------------------------- |
@@ -302,7 +302,7 @@ docker compose up -d
 | Keycloak      | [http://localhost:8443](http://localhost:8443) |
 
 
-## 🔐 Keycloak Notes
+##  Keycloak Notes
 
 This project uses **Keycloak** for authentication.
 
