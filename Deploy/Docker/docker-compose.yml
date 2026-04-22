@@ -46,6 +46,8 @@ services:
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT: false
     command: [ "start-dev" ]
     networks:
       - backend
@@ -96,9 +98,11 @@ services:
       - 9411:9411
     networks:
       - backend
+      - loki
 
   configserver:
-    image: ecom/config-server
+    build: ../../configserver
+    #image: ecom/config-server
     container_name: config-server
     ports:
       - 8888:8888
@@ -118,7 +122,7 @@ services:
       - backend
 
   eureka:
-    image: ecom/eureka
+    build: ../../eureka
     container_name: eureka
     ports:
       - 8761:8761
@@ -131,12 +135,13 @@ services:
       retries: 5
 
   gateway-service:
-    image: ecom/gateway
+    build: ../../gateway
     container_name: gateway
     ports:
       - 8080:8080
     environment:
       - SPRING_PROFILES_ACTIVE=docker
+      - ZIPKIN_URL=${ZIPKIN_URL}
     depends_on:
       - configserver
       - eureka
@@ -148,7 +153,7 @@ services:
     restart: on-failure
 
   user-service:
-    image: ecom/user-service
+    build: ../../user
     container_name: user-service
     ports:
       - 8082:8082
@@ -174,7 +179,8 @@ services:
     restart: on-failure
 
   product-service:
-    image: ecom/product-service
+    build: ../../product
+    #image: ecom/product-service
     container_name: product-service
     ports:
       - 8081:8081
@@ -198,7 +204,8 @@ services:
     restart: on-failure
 
   order-service:
-    image: ecom/order-service
+    build: ../../order
+    #image: ecom/order-service
     container_name: order-service
     ports:
       - 8083:8083
@@ -222,7 +229,8 @@ services:
     restart: on-failure
 
   notification-service:
-    image: ecom/notification-service
+    build: ../../notification
+    #image: ecom/notification-service
     container_name: notification-service
     ports:
       - 8084:8084
