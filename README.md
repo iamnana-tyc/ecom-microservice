@@ -262,7 +262,7 @@ Different databases per service based on use-case
 * Event-driven architecture with Kafka
 * Service discovery and load balancing
 
-## 🚀 Running the Project (Docker)
+##  Running the Project (Docker)
 
 This project uses **Dockerfiles + Docker Compose** to build and run all microservices locally.
 
@@ -334,7 +334,7 @@ environment:
 
 ---
 
-## 🛑 Stop Services
+##  Stop Services
 
 ```bash
 docker compose down
