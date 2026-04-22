@@ -3,42 +3,41 @@
 #################################################
 
 # Maven
-**/target/
-**/pom.xml.tag
-**/pom.xml.releaseBackup
-**/pom.xml.versionsBackup
-**/pom.xml.next
-**/release.properties
-**/dependency-reduced-pom.xml
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
 
 # Gradle
-**/.gradle/
-**/build/
+.gradle/
+build/
 
-# Java
-**/*.class
-**/*.jar
-**/*.war
-**/*.ear
+# Java artifacts
+*.class
+*.jar
+*.war
+*.ear
 
 #################################################
 # ================= LOGS ========================
 #################################################
 
-**/*.log
+*.log
 logs/
-**/logs/
 *.out
 
 #################################################
 # ================= TEST ========================
 #################################################
 
-**/surefire-reports/
-**/failsafe-reports/
-**/jacoco.exec
-**/coverage/
-**/.nyc_output/
+surefire-reports/
+failsafe-reports/
+jacoco.exec
+coverage/
+.nyc_output/
 
 #################################################
 # ================= IDE =========================
@@ -46,9 +45,7 @@ logs/
 
 # IntelliJ
 .idea/
-**/*.iml
-**/*.ipr
-**/*.iws
+*.iml
 
 # VSCode
 .vscode/
@@ -69,26 +66,21 @@ Thumbs.db
 # ================= ENV / SECRETS ===============
 #################################################
 
-# Environment files
-Deploy/Docker/.env
+# Root env files
+.env
 .env.*
-**/.env
-**/.env.*
 
-# Spring profiles (local/dev secrets)
-application-local.yml
-application-local.yaml
-application-local.properties
-application-prod.yml
-application-prod.yaml
-application-prod.properties
+# Docker env
+Deploy/Docker/.env
 
-# Config Server sensitive configs
-config-repo/*-prod.yml
-config-repo/*-prod.yaml
-config-repo/*-prod.properties
+# Spring profiles (local secrets only)
+application-local.*
+application-prod.*
 
-# Keys & Certificates
+# Config server secrets
+config-repo/*-prod.*
+
+# Keys & certs
 *.pem
 *.key
 *.crt
@@ -106,40 +98,65 @@ id_dsa*
 docker-compose.override.yml
 docker-compose.local.yml
 
-# Docker volumes & temp data
-**/docker-data/
-**/volumes/
-**/tmp/
+# Container runtime data (CRITICAL FIX)
+Deploy/Docker/.data/
 
-# Built images archives
+# Generic container volumes (if used)
+docker-data/
+volumes/
+tmp/
+
+# Image archives
 *.tar
 *.tar.gz
 
 #################################################
-# ================= KAFKA =======================
+# ================= DATABASES ===================
 #################################################
 
-# Kafka local data
+# MongoDB
+mongo-data/
+
+# PostgreSQL
+postgres-data/
+
+# MySQL
+mysql-data/
+
+#################################################
+# ================= MESSAGE BROKERS =============
+#################################################
+
+# Kafka / Zookeeper
 kafka-logs/
-**/kafka-data/
-**/zookeeper-data/
+kafka-data/
+zookeeper-data/
+
+# RabbitMQ
+rabbitmq-data/
 
 #################################################
-# ================= PROMETHEUS ==================
+# ================= OBSERVABILITY ===============
 #################################################
 
+# Prometheus
 prometheus-data/
-**/prometheus-data/
 
-#################################################
-# ================= GRAFANA =====================
-#################################################
-
+# Grafana
 grafana-data/
-**/grafana-data/
+
+# Loki
+loki-data/
 
 #################################################
-# ================= NODE (if gateway/frontend) ==
+# ================= STORAGE =====================
+#################################################
+
+# MinIO / object storage
+minio-data/
+
+#################################################
+# ================= NODE (if frontend/gateway) ==
 #################################################
 
 node_modules/
@@ -147,7 +164,6 @@ dist/
 build/
 npm-debug.log*
 yarn-error.log*
-pnpm-lock.yaml
 
 #################################################
 # ================= MISC ========================
