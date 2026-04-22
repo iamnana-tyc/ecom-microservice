@@ -49,7 +49,7 @@ public class KeyCloakAdminService {
         String url = keycloakServerUrl + "/realms/" + realm + "/protocol/openid-connect/token";
         ResponseEntity<Map> response = restTemplate.postForEntity(url,entity,Map.class);
 
-        return response.getBody().get("access_token").toString();
+        return (String) response.getBody().get("access_token");
     }
 
     public String createUser(String token, UserRequest userRequest){
