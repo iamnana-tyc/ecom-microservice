@@ -262,6 +262,90 @@ Different databases per service based on use-case
 * Event-driven architecture with Kafka
 * Service discovery and load balancing
 
+## 🚀 Running the Project (Docker)
+
+This project uses **Dockerfiles + Docker Compose** to build and run all microservices locally.
+
+> I tried using the Buildpacks approach initially but switched to Dockerfiles for more reliable and deterministic builds (avoiding external dependency download failures).
+
+## Build Images
+
+From the Docker folder:
+
+```bash
+./build-images.sh
+```
+
+Each service is:
+
+1. Packaged as a JAR (`mvn clean package`)
+2. Built into a Docker image via Dockerfile
+
+---
+
+## ▶️ Start All Services
+
+```bash
+docker compose up -d
+```
+
+
+## 🌐 Access Services from Host Machine
+
+| Service       | URL                                            |
+| ------------- | ---------------------------------------------- |
+| API Gateway   | [http://localhost:8080](http://localhost:8080) |
+| Eureka        | [http://localhost:8761](http://localhost:8761) |
+| Config Server | [http://localhost:8888](http://localhost:8888) |
+| Zipkin        | [http://localhost:9411](http://localhost:9411) |
+| Grafana       | [http://localhost:3000](http://localhost:3000) |
+| Keycloak      | [http://localhost:8443](http://localhost:8443) |
+
+
+## 🔐 Keycloak Notes
+
+This project uses **Keycloak** for authentication.
+
+* Access via:
+
+  ```
+  http://localhost:8443
+  ```
+* Do **NOT** use HTTPS in local development
+
+### Default Credentials
+
+```
+Username: admin
+Password: admin
+```
+
+### Dev Configuration
+
+Keycloak is configured to allow HTTP:
+
+```yaml
+environment:
+  KC_BOOTSTRAP_ADMIN_USERNAME: admin
+  KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+  KC_HTTP_ENABLED: true
+  KC_HOSTNAME_STRICT: false
+```
+
+---
+
+## 🛑 Stop Services
+
+```bash
+docker compose down
+```
+
+To remove volumes:
+
+```bash
+docker compose down -v
+```
+
 
 ## Future Improvements
 
